@@ -2,6 +2,11 @@
 
 using namespace std;
 
+class Screen{
+private:
+  double price;
+};
+
 int main(){
 
   return 0;
