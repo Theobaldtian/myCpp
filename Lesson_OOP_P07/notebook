@@ -1,0 +1,5 @@
+in three environment, must use initilize list
+first: the variable is 'const'
+second: reference type
+third: class type without default construct function
+
