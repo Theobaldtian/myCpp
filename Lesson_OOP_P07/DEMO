@@ -1,13 +1,114 @@
 #include <iostream>
+#include <string>
 
 using namespace std;
 
-class Screen{
-private:
-  double price;
+class Person {
+public:
+	Person(const std::string& nm) :name(nm) {}
+	Person(const std::string& nm, int a) :name(nm), age(a) {}
+public:
+	std::string name;
+	int age;
 };
 
-int main(){
+class Dog {
+	Dog() :legs(4) {
+		//this->legs = 4; //in some accation,must use initialize list
+	}
+private:
+	std::string name;
+	const int legs;
+};
 
-  return 0;
+class Cat {
+public:
+	std::string getName() { return this->name; }
+	int getAge() { return this->age;}
+private:
+	std::string name;
+	int age;
+};
+
+class Data {
+public:
+	int ival;
+	const char* ptr;
+};
+
+class Eata {
+public:
+	Eata(int i,const char* p):ival(i),ptr(p){}
+private:
+	int ival;
+	const char* ptr;
+};
+
+
+class Sales_item {
+public:
+	Sales_item(const std::string& book, int units, double amount)
+		//:isbn(book), units_sold(units), revenue(amount) //notice the difference between the two type of initialize
+	{
+		this->isbn = book;			//this type will run slower
+		this->units_sold = units;
+		this->revenue = amount;
+	}
+	//Sales_item(const std::string& book, int units, double price):isbn(book), units_sold(units), revenue(units * price) {}	//it will be ok
+	//Sales_item(const std::string& book) :isbn(book), units_sold(0), revenue(0.0) {}
+	explicit Sales_item(const std::string & book="") :isbn(book), units_sold(0), revenue(0.0) {}	//tag_one
+	explicit Sales_item(std::istream& is) { is >> *this; }
+	Sales_item(int uints, double price) {
+		this->units_sold = uints;
+		this->revenue = uints * price;
+	}
+	//Sales_item() :units_sold(0), revenue(0.0) {}	//comebined with tag_one
+	friend std::istream& operator>>(std::istream&, Sales_item&);
+	bool sameIsbn(const Sales_item& rhs) const {
+		return isbn == rhs.isbn;
+	}
+private:
+	std::string isbn;
+	unsigned units_sold;
+	double revenue;
+};
+
+inline istream& operator>>(std::istream& in, Sales_item& s) {
+	double price;
+	in >> s.isbn >> s.units_sold >> price;
+	if (in)
+		s.revenue = s.units_sold * price;
+	else
+		s = Sales_item();
+	return in;
+}
+
+int main() {
+	Data v = { 9, "hello"};	//c style
+	Eata w(9, "hello");	//c++ style
+
+
+	Person a("张飞",0);
+	cout << a.name << endl;
+	cout << a.age << endl;
+
+	Sales_item item1;
+	Sales_item item2("6-901-3405-21");
+	Sales_item* p = new Sales_item();
+
+/*	if (item1.sameIsbn(item2)) {
+
+	}
+	//if (item1.sameIsbn("9-999-9999-99")) {}	//will error
+	if (item1.sameIsbn(cin)) {	//will not error, but it will create a new obj, not obj
+								//it will occur when construct function only have one parament
+								//so type 'ecplicit' in front of function declare
+	}
+*/
+
+	//delete *p;	//will error!
+	delete p;
+
+
+	return 0;
 }
