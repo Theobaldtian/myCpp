@@ -1,0 +1,68 @@
+//FRIEND
+
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+//class Screen;
+class Screen;
+
+class Dog {
+public:
+	int foo(Screen& screen);
+	int koo(Screen& screen);
+};
+
+class Screen {
+public:
+	typedef std::string::size_type index;
+	Screen(int ht = 0, int wd = 0) :height(ht), width(wd), contents(ht* wd, ' '),cursor(0) {}
+	int acre() const {
+		return height * width;
+	}
+	friend int calcAcre(Screen&);
+	friend class Window_Mgr;
+	//friend class Dog;
+	friend int Dog::foo(Screen&);		//只对某个函数作为成员函数
+private:
+	std::string contents;
+	index cursor;
+	int height, width;
+};
+//this function is not member function of class Screen
+int calcAcre(Screen &screen) {
+	return screen.height * screen.width;
+}
+
+//类友元 - 对Screen类进行管理
+class Window_Mgr {
+public:
+	void reLocate(int r, int c, Screen& s) {
+		s.height += r;
+		s.width += c;
+	}
+};
+
+int Dog::foo(Screen& screen) {
+	return screen.height * screen.width;
+}
+int Dog::koo(Screen& screen) {
+	//return screen.height * screen.width;	//不是友元函数
+	return screen.acre();
+}
+
+
+int main() {
+
+	Screen a(60, 100);
+	cout << a.acre() << endl;
+	Window_Mgr wm;
+	wm.reLocate(40, 100, a);
+	cout << calcAcre(a) << endl;
+	Dog d;
+	cout << d.foo(a) << endl;
+	cout << d.koo(a) << endl;
+
+	return 0;
+}
