@@ -1,0 +1,65 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+//全局变量
+//double interestRate;
+
+class Dog {
+private:
+	static double interestRate;
+};
+
+class Account {
+public:
+	Account(const std::string& name, double money) :owner(name), amount(money) {};
+	double getAmount() {
+		return this->amount;
+	}
+	void deposit(double kk) {
+		this->amount += kk;
+	}
+	static double rate() {		//修改静态成员变量必须使用成员函数
+		return interestRate;
+		//return interestRate = 0.021;
+	}
+	static void rate(double newRate) {
+		interestRate = newRate;
+	}
+	void applyInt() {
+		amount += amount * interestRate;
+		//return this->amount += this->amount * interestRate;
+	}
+private:
+	std::string owner;
+	double amount;
+	static double interestRate;		//静态成员不属于对象
+	static const int period = 20;	//唯一一个特例
+};
+
+double Account::interestRate;// = 0.018;	//初始化，可以不给值，但是得有这句
+
+int main() {
+	//interestRate = 0.015;
+	Account::rate(0.025);
+
+
+	Account a("张三", 1000);
+	Account b("李思", 2000);
+	a.deposit(200);
+	b.deposit(500);
+	cout << a.rate() << endl;
+	a.rate(0.026);
+	cout << b.rate() << endl;
+
+	Account::rate(0.02);
+	a.applyInt();
+	b.applyInt();
+	cout << a.getAmount() << endl;
+	cout << b.getAmount() << endl;
+
+	//cout << a.applyInt() << endl; //applyInt()不为空类型也可
+
+	return 0;
+}
