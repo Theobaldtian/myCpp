@@ -1,0 +1,112 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+using namespace std;
+//复制构造函数 和 赋值操作符，一般情况下不写系统也会为为我们写好，而且很好用。
+//有一种情况列外：当复制构造函数有指针(即，类有指针类型的数据成员)，动态分配内存时，必须自己写复制构造函数 和 赋值操作符。
+class Sales_item {
+public:
+	//构造函数
+	Sales_item():units_sold(0),revenue(0.0){
+		cout << "构造函数a被调用了！" << endl;
+	}
+	Sales_item(const std::string &book):isbn(book), units_sold(0), revenue(0.0) {
+		cout << "构造函数b被调用了！" << endl;
+	}
+	//复制构造函数
+	Sales_item(const Sales_item& orig) 
+		:isbn(orig.isbn), units_sold(orig.units_sold), revenue(orig.revenue) {
+		cout << "复制构造函数被调用了！" << endl;
+	}
+	//赋值操作符
+	Sales_item& operator = (const Sales_item& rhs) {
+		cout << "赋值运算符被调用了！" << endl;
+		isbn = rhs.isbn;
+		units_sold = rhs.units_sold;
+		revenue = rhs.revenue;
+		return* this;
+	}
+private:
+	std::string isbn;
+	unsigned units_sold;
+	double revenue;
+};
+
+Sales_item foo(Sales_item item) {
+	Sales_item temp;
+	temp = item;
+	return temp;
+}
+
+class NoName {
+public:
+	//构造函数
+	NoName() :pstring(new std::string), i(0), d(0.0) {
+		cout << "NoName构造函数被调用了！" << endl;
+	}
+	//复制构造函数(合理的，可以传指针指向的字符串)
+	NoName(const NoName& other) :
+		pstring(new std::string(*(other.pstring))), i(other.i), d(other.d) {
+		cout << "NoName复制构造函数被调用了！" << endl;
+	}
+	//赋值操作符(合理的，可以传指针指向的字符串)
+	NoName& operator = (const NoName& rhs) {
+		cout << "NoName赋值运算符被调用了！" << endl;
+		pstring = new std::string;
+		*pstring = *(rhs.pstring);
+		i = rhs.i;
+		d = rhs.d;
+		return *this;
+	}
+	////复制构造函数(默认的，即合成的构造函数，不会传传指针指向的字符串)
+	//NoName(const NoName& other) :
+	//	pstring(other.pstring), i(other.i), d(other.d) {
+	//	cout << "复制构造函数被调用了！" << endl;
+	//}
+	////赋值操作符(默认的，即合成的赋值操作符，不会传传指针指向的字符串)
+	//NoName& operator = (const NoName& rhs) {
+	//	cout << "赋值运算符被调用了！" << endl;
+	//	pstring = rhs.pstring;
+	//	i = rhs.i;
+	//	d = rhs.d;
+	//	return *this;
+	//}
+private:
+	std::string* pstring;
+	int i;
+	double d;
+};
+
+int main() {
+	NoName x, y;
+	y = x;
+	NoName z(x);
+	cout << endl << endl;
+	
+	Sales_item a;
+	Sales_item b("2-210-78645-X");
+	Sales_item c(b);	//调用复制构造函数
+	a = b;		//调用复制操作符
+	Sales_item item = string("2-210-78645-0");
+
+	//cout << endl << "试一下foo函数" << endl;
+	//Sales_item ret = foo(item);
+
+	cout << endl << "试一下foo函数" << endl;
+	Sales_item ret;
+	ret = foo(item);
+
+	cout << endl << "试一下vector" << endl;
+	vector<Sales_item> svec(5);
+
+	cout << endl << "试一下数组" << endl;
+	Sales_item priner_eds[] = {
+		string("6-201-27648-5"),
+		string("6-201-27648-6"),
+		string("6-201-27648-7"),
+		Sales_item()
+	};
+
+	return 0;
+}
