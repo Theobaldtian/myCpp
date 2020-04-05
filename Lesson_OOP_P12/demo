@@ -1,0 +1,48 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class CDemo {
+public:
+	CDemo(int pa,const char* cstr) {
+		this->a = pa;
+		this->str = new char[1024];
+		strcpy_s(this->str, 1024, cstr);
+	}
+	//复制构造函数，带有指针的成员变量，如果使用合成的构造函数，则是浅复制，会导致结果出错
+	//所以必须自己写构造函数，形成深复制
+
+	//如果使用了系统资源，而未使用深复制，则在析构时会形成悬停指针，即野指针，出错
+	CDemo(CDemo& obj) {
+		this->a = obj.a;
+		//this->str = obj.str;	//这里不对，需要使用深复制才行，这是钱复制
+		this->str = new char[1024];
+		if (str!=0)
+			strcpy_s(this->str, 1024, obj.str);
+	}
+	~CDemo() {
+		delete str;
+	}
+
+//private:	//shoule be private,but use public to demo
+public:
+	int a;
+	char* str;
+};
+
+int main() {
+
+	CDemo A(10,"hello");
+	cout << A.a << "," << A.str << endl;
+	CDemo B = A;
+	cout << B.a << "," << B.str << endl;
+
+	B.a = 8;
+	B.str[0] = 'k';
+		cout << "修改后的结果：" << endl;
+	cout << A.a << "," << A.str << endl;
+	cout << B.a << "," << B.str << endl;
+
+	return 0;
+}
