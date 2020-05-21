@@ -1,0 +1,22 @@
+#include <iostream>
+#include "Sales_item.h"
+
+using namespace std;
+
+int main() {
+
+	Sales_item item1(std::string("0-123-456788-X"), 10, 120.00);
+	Sales_item item2(std::string("0-223-456788-X"), 10, 120.00);
+
+	if (item1 != item2) {
+		cout << "两个是一样的" << endl;
+	}
+	else {
+		cout << "我们不一样" << endl;
+	}
+		
+
+
+	system("pause");
+	return 0;
+}
